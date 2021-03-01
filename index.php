@@ -1,3 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
 <?php
 
 /**
@@ -13,3 +25,63 @@
  * 4. Faites la même chose, mais cette fois ci, triez le résultat selon la colonne ID, du plus grand au plus petit.
  * 5. Faites la même chose, mais cette fois ci en ne sélectionnant que les noms et les prénoms.
  */
+
+try {
+    $server = 'localhost';
+    $db = 'exo_194';
+    $user = 'root';
+    $pass = '';
+
+    $bdd = new PDO("mysql:host=$server;dbname=$db;charset=utf8", $user,$pass);
+    $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $bdd->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+    $stmt = $bdd->prepare("SELECT * FROM user");
+
+    $state = $stmt->execute();
+
+    if ($state){
+        foreach ($stmt->fetchAll() as $user){
+            echo "<div class='classe-css-utilisateur'>" .$user['nom']. " " .$user['prenom']. " " .$user['rue']. " "
+            .$user['numero']. " " .$user['code_postal']. " " .$user['ville']. " " .$user['pays']. " " .$user['mail'] . "</div>";
+        }
+    }
+
+    echo "<br>";
+
+    echo "Ordre Croisant";
+
+    $stmt = $bdd->prepare("SELECT * FROM user ORDER BY id DESC ");
+    $state = $stmt->execute();
+
+    if ($state){
+        foreach ($stmt->fetchAll() as $user){
+            echo  "<div class='classe-css-utilisateur'>" .$user['nom']. " " .$user['prenom']. " " .$user['rue']. " "
+                .$user['numero']. " " .$user['code_postal']. " " .$user['ville']. " " .$user['pays']. " " .$user['mail'] ."</div>";
+        }
+    }
+
+    echo "<br>";
+
+    echo "Nom Prenom";
+
+    $stmt = $bdd->prepare("SELECT nom, prenom FROM user");
+    $state = $stmt->execute();
+
+    if ($state){
+        foreach ($stmt->fetchAll() as $user){
+            echo "<div class='classe-css-utilisateur'>" .$user['nom']. " " .$user['prenom']. "</div>";
+        }
+    }
+    else{
+        echo "Erreur";
+    }
+}
+catch (PDOException $exception){
+    echo $exception->getMessage();
+}
+
+?>
+
+</body>
+</html>
